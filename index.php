@@ -9,4 +9,5 @@ header("Content-Type:application/json");
 exec("py blockchain.py " . $data , $ex , $re);
 
 // echo "<pre>";
-return $ex;
+echo($ex[0]);
+// echo ($re);
