@@ -5,7 +5,7 @@ import sys
 import os
 from datetime import datetime
 from pathlib import Path
-
+from response import *
 DB_FILE="database.json"
 
 class Block:
@@ -154,9 +154,12 @@ class Blockchain:
         return current_hash == info['stored_hash']
 
 if __name__ == '__main__':
+
+    #TODO i have to change this code to (match) or switch Like Routes
+
     if len(sys.argv) < 3:
-        print("Usage: python script.py <image_path> <uuid>")
-        sys.exit(1)
+        send_bad_request("Usage: python script.py <image_path> <uuid>")
+        sys.exit(400)
     
     image_path = sys.argv[1]
     uuid = sys.argv[2]
@@ -164,19 +167,20 @@ if __name__ == '__main__':
     blockchain = Blockchain()
     
     if not blockchain.validate_chain():
-        print("السلسلة غير صالحة!")
-        sys.exit(1)
+        #TODO type an error message .
+        send_bad_request("bad bad")
+        sys.exit(400)
     
     try:
         new_block = blockchain.add_image_contract(uuid, image_path)
         blockchain.save_to_file()
-        
-        print(json.dumps({
+        data = {
             'hash': new_block.hash,
             'index': new_block.index,
             'file_path': new_block.data['file_path'],
             'stored_hash': new_block.data['hash']
-        }))
+        }
+        # send_ok(data)
     except FileNotFoundError as e:
-        print(f"خطأ: {e}")
-        sys.exit(2)
+        send_bad_response(f"error : {e}")
+        sys.exit(500)
