@@ -180,7 +180,7 @@ if __name__ == '__main__':
             'file_path': new_block.data['file_path'],
             'stored_hash': new_block.data['hash']
         }
-        # send_ok(data)
+        send_ok(data)
     except FileNotFoundError as e:
         send_bad_response(f"error : {e}")
         sys.exit(500)
