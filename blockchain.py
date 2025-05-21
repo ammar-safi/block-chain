@@ -173,24 +173,31 @@ if __name__ == '__main__':
         sys.exit(404)
 
     route = sys.argv[1]  
+    blockchain = Blockchain()
+
     match route : 
         case 'block_chain_file' :
-            
-            file_path = sys.argv[2]
-            uuid = sys.argv[3]
-            blockchain = Blockchain()
-
-            if not blockchain.validate_chain():
+            try:            
+                if len(sys.argv) < 3:
+                    send_not_found("you have to send the file_path")
+                    sys.exit(400)
+                if len(sys.argv) < 4:
+                    send_not_found("you have to send the id")
+                    sys.exit(400)
                 
-                send_bad_request("the chain is broken")
-                sys.exit(400)
+                file_path = sys.argv[2]
+                uuid = sys.argv[3]
 
-            try:
+                if not blockchain.validate_chain():
+                    
+                    send_bad_request("the chain is broken")
+                    sys.exit(400)
+
                 new_block = blockchain.add_image_contract(uuid, file_path)
                 blockchain.save_to_file()
                 data = {
                     'hash': new_block.hash,
-                    'index': new_block.index,
+                    'index': new_block.index ,
                     'file_path': new_block.data['file_path'],
                     'stored_hash': new_block.data['hash']
                 }
@@ -199,8 +206,16 @@ if __name__ == '__main__':
                 send_server_error(f"error : {e}")
                 sys.exit(500)
 
-        # case "block_chain_check":
-            
+        case "block_chain_check":     
+            try:        
+                if not blockchain.validate_chain():
+                    
+                    send_bad_request("the chain is broken")
+                    sys.exit(400)  
+                send_ok()
+            except Exception as e:
+                send_server_error(f"error : {e}")
+                sys.exit(500)
         case _ :
             send_not_found()
          

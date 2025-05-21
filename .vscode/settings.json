@@ -1,3 +1,17 @@
 {
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "ms-python.python",
+  "python.formatting.provider": "black",
+  "python.formatting.blackArgs": ["--line-length", "88"],
+  "editor.suggestOnTriggerCharacters": true,
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": true,
+    "strings": true
+  },
+  "editor.acceptSuggestionOnEnter": "on",
+  "editor.snippetSuggestions": "top",
+  "editor.suggestSelection": "first",
+  "editor.suggest.showKeywords": true,
   "workbench.colorCustomizations": {}
 }

@@ -15,7 +15,7 @@ def send_bad_request (message) :
         status=400
     )
 
-def send_ok (data) :
+def send_ok (data=None) :
     send_response (
         data=data
     )
