@@ -20,3 +20,14 @@ def send_ok (data) :
         data=data
     )
 
+def send_not_found (message="not found") :
+    send_response(
+        message=message,
+        status=404
+    )
+def send_server_error (message) :
+    send_response(
+        message=message,
+        status=500
+    )
+

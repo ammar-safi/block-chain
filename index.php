@@ -6,7 +6,7 @@ $data = "C:\Users\HP\Pictures\Screenshots\Screenshot(319).png a4ldsfm31opsd8f903
 // header("Content-Type: application/json");
 
 header("Content-Type:application/json");
-exec("py blockchain.py " . $data , $ex , $re);
+exec("py blockchain.py block_chain_file " . $data , $ex , $re);
 
 // echo "<pre>";
 echo($ex[0]);

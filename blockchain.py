@@ -152,35 +152,58 @@ class Blockchain:
             
         current_hash = self._calculate_file_hash(info['file_path'])
         return current_hash == info['stored_hash']
+    
+    def find_corrupted_block(self):
+        for i in range(1, len(self.chain)):
+            current = self.chain[i]
+            previous = self.chain[i - 1]
+            if (
+                current.previous_hash != previous.hash
+                or not self.is_valid_proof(current)
+                or current.hash != current.compute_hash()
+            ):
+                return i  # رقم البلوك الفاسد
+        return None  # السلسلة سليمة
+
 
 if __name__ == '__main__':
 
-    #TODO i have to change this code to (match) or switch Like Routes
+    if len(sys.argv) < 2:
+        send_not_found("you have to send the rout")
+        sys.exit(404)
 
-    if len(sys.argv) < 3:
-        send_bad_request("Usage: python script.py <image_path> <uuid>")
-        sys.exit(400)
+    route = sys.argv[1]  
+    match route : 
+        case 'block_chain_file' :
+            
+            file_path = sys.argv[2]
+            uuid = sys.argv[3]
+            blockchain = Blockchain()
+
+            if not blockchain.validate_chain():
+                
+                send_bad_request("the chain is broken")
+                sys.exit(400)
+
+            try:
+                new_block = blockchain.add_image_contract(uuid, file_path)
+                blockchain.save_to_file()
+                data = {
+                    'hash': new_block.hash,
+                    'index': new_block.index,
+                    'file_path': new_block.data['file_path'],
+                    'stored_hash': new_block.data['hash']
+                }
+                send_ok(data)
+            except FileNotFoundError as e:
+                send_server_error(f"error : {e}")
+                sys.exit(500)
+
+        # case "block_chain_check":
+            
+        case _ :
+            send_not_found()
+         
+
+
     
-    image_path = sys.argv[1]
-    uuid = sys.argv[2]
-    
-    blockchain = Blockchain()
-    
-    if not blockchain.validate_chain():
-        #TODO type an error message .
-        send_bad_request("bad bad")
-        sys.exit(400)
-    
-    try:
-        new_block = blockchain.add_image_contract(uuid, image_path)
-        blockchain.save_to_file()
-        data = {
-            'hash': new_block.hash,
-            'index': new_block.index,
-            'file_path': new_block.data['file_path'],
-            'stored_hash': new_block.data['hash']
-        }
-        send_ok(data)
-    except FileNotFoundError as e:
-        send_bad_response(f"error : {e}")
-        sys.exit(500)
